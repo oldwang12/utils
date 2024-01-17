@@ -1,7 +1,6 @@
 package dingding
 
 import (
-	"bytes"
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/base64"
@@ -10,6 +9,8 @@ import (
 	"io"
 	"net/http"
 	"time"
+
+	"github.com/oldwang12/utils/easyhttp"
 )
 
 type DingTalk struct {
@@ -22,7 +23,7 @@ type DingTalkReqponse struct {
 	ErrMsg  string `json:"errmsg"`
 }
 
-var Text = "text"
+const DingTalkPrefix = "https://oapi.dingtalk.com/robot/send"
 
 func NewDingTalk(accessToken, secret string) *DingTalk {
 	return &DingTalk{
@@ -40,51 +41,70 @@ func (d *DingTalk) sign(timestamp int64) string {
 	return base64.StdEncoding.EncodeToString(data)
 }
 
-func (d *DingTalk) Send(messageType, content string) error {
-	if messageType == "" {
-		messageType = Text
-	}
-
+func (d *DingTalk) SendText(content string) error {
 	timestamp := time.Now().UnixNano() / int64(time.Millisecond)
 	sign := d.sign(timestamp)
-	url := fmt.Sprintf("https://oapi.dingtalk.com/robot/send?access_token=%v&timestamp=%v&sign=%v",
-		d.AccessToken, timestamp, sign)
+	url := fmt.Sprintf("%v?access_token=%v&timestamp=%v&sign=%v", DingTalkPrefix, d.AccessToken, timestamp, sign)
 
 	payload := map[string]interface{}{
-		"msgtype": messageType,
+		"msgtype": "text",
 		"text": map[string]string{
 			"content": content,
 		},
 	}
-	jsonPayload, err := json.Marshal(payload)
+	requestBody, err := json.Marshal(payload)
 	if err != nil {
 		return err
 	}
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonPayload))
-	if err != nil {
-		return err
+	headers := map[string]string{
+		"Content-Type": "application/json",
 	}
-	req.Header.Set("Content-Type", "application/json")
+	_, err = d.Request(url, http.MethodPost, requestBody, headers)
+	return err
+}
 
-	client := &http.Client{}
-	resp, err := client.Do(req)
+func (d *DingTalk) SendMarkDown(title, text string) error {
+	timestamp := time.Now().UnixNano() / int64(time.Millisecond)
+	sign := d.sign(timestamp)
+	url := fmt.Sprintf("%v?access_token=%v&timestamp=%v&sign=%v", DingTalkPrefix, d.AccessToken, timestamp, sign)
+
+	payload := map[string]interface{}{
+		"msgtype": "markdown",
+		"markdown": map[string]interface{}{
+			"title": title,
+			"text":  text,
+		},
+	}
+	requestBody, err := json.Marshal(payload)
 	if err != nil {
 		return err
+	}
+	headers := map[string]string{
+		"Content-Type": "application/json",
+	}
+	_, err = d.Request(url, http.MethodPost, requestBody, headers)
+	return err
+}
+
+func (d *DingTalk) Request(url, method string, requestBody []byte, headers map[string]string) (*http.Response, error) {
+	resp, err := easyhttp.Request(url, http.MethodPost, requestBody, headers)
+	if err != nil {
+		return nil, err
 	}
 	defer resp.Body.Close()
 
 	b, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	var res DingTalkReqponse
 	if err := json.Unmarshal(b, &res); err != nil {
-		return err
+		return nil, err
 	}
 
 	if res.ErrCode != 0 || res.ErrMsg != "ok" {
-		return fmt.Errorf("failed to send message: %v", res)
+		return nil, fmt.Errorf("failed to send message: %v", res)
 	}
-	return nil
+	return resp, nil
 }
