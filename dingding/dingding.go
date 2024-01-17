@@ -22,7 +22,7 @@ type DingTalkReqponse struct {
 	ErrMsg  string `json:"errmsg"`
 }
 
-const Text = "text"
+var Text = "text"
 
 func NewDingTalk(accessToken, secret string) *DingTalk {
 	return &DingTalk{
