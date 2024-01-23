@@ -2,8 +2,10 @@ package easyhttp
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"net/http"
+	"regexp"
 )
 
 func Request(url, method string, requestBody []byte, headers map[string]string) ([]byte, error) {
@@ -22,4 +24,21 @@ func Request(url, method string, requestBody []byte, headers map[string]string) 
 		return nil, err
 	}
 	return io.ReadAll(resp.Body)
+}
+
+// 分享内容中中提取链接
+func ExtractURL(text string) (string, error) {
+	// Define the regular expression pattern for matching URLs
+	urlPattern := `https?://[^\s]+`
+
+	// Compile the regular expression
+	re := regexp.MustCompile(urlPattern)
+
+	// Find the first match in the text
+	match := re.FindString(text)
+
+	if match == "" {
+		return "", fmt.Errorf("no url found in the provided text")
+	}
+	return match, nil
 }
