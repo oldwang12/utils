@@ -6,7 +6,6 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"time"
 
@@ -59,8 +58,7 @@ func (d *DingTalk) SendText(content string) error {
 	headers := map[string]string{
 		"Content-Type": "application/json",
 	}
-	_, err = d.Request(url, http.MethodPost, requestBody, headers)
-	return err
+	return d.Request(url, http.MethodPost, requestBody, headers)
 }
 
 func (d *DingTalk) SendMarkDown(title, text string) error {
@@ -82,29 +80,22 @@ func (d *DingTalk) SendMarkDown(title, text string) error {
 	headers := map[string]string{
 		"Content-Type": "application/json",
 	}
-	_, err = d.Request(url, http.MethodPost, requestBody, headers)
-	return err
+	return d.Request(url, http.MethodPost, requestBody, headers)
 }
 
-func (d *DingTalk) Request(url, method string, requestBody []byte, headers map[string]string) (*http.Response, error) {
-	resp, err := easyhttp.Request(url, http.MethodPost, requestBody, headers)
+func (d *DingTalk) Request(url, method string, requestBody []byte, headers map[string]string) error {
+	b, err := easyhttp.Request(url, http.MethodPost, requestBody, headers)
 	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	b, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
+		return err
 	}
 
 	var res DingTalkReqponse
 	if err := json.Unmarshal(b, &res); err != nil {
-		return nil, err
+		return err
 	}
 
 	if res.ErrCode != 0 || res.ErrMsg != "ok" {
-		return nil, fmt.Errorf("failed to send message: %v", res)
+		return fmt.Errorf("failed to send message: %v", res)
 	}
-	return resp, nil
+	return nil
 }
