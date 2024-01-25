@@ -26,7 +26,7 @@ func Request(url, method string, requestBody []byte, headers map[string]string) 
 	return io.ReadAll(resp.Body)
 }
 
-// 分享内容中中提取链接
+// 分享内容中提取链接
 func ExtractURL(text string) (string, error) {
 	// Define the regular expression pattern for matching URLs
 	urlPattern := `https?://[^\s]+`
@@ -38,7 +38,24 @@ func ExtractURL(text string) (string, error) {
 	match := re.FindString(text)
 
 	if match == "" {
-		return "", fmt.Errorf("no url found in the provided text")
+		return "", fmt.Errorf("no url found in provided text")
 	}
 	return match, nil
+}
+
+// 获取重定向地址
+func GetRedirectURL(url string) (string, error) {
+	// 发送HTTP GET请求
+	resp, err := http.Get(url)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	// 获取重定向URL
+	redirectURL := resp.Request.URL
+	if redirectURL.String() == "" {
+		return "", fmt.Errorf("empty redirect URL")
+	}
+	return redirectURL.String(), nil
 }
