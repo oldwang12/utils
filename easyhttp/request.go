@@ -6,6 +6,8 @@ import (
 	"io"
 	"net/http"
 	"regexp"
+
+	"github.com/PuerkitoBio/goquery"
 )
 
 func Request(url, method string, requestBody []byte, headers map[string]string) ([]byte, error) {
@@ -58,4 +60,19 @@ func GetRedirectURL(url string) (string, error) {
 		return "", fmt.Errorf("empty redirect URL")
 	}
 	return redirectURL.String(), nil
+}
+
+// 获取url返回的html内容
+func GetUrlHTMLContent(url string) (string, error) {
+	response, err := http.Get(url)
+	if err != nil {
+		return "", err
+	}
+	defer response.Body.Close()
+
+	document, err := goquery.NewDocumentFromReader(response.Body)
+	if err != nil {
+		return "", err
+	}
+	return document.Html()
 }
