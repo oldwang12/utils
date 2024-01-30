@@ -1,4 +1,4 @@
-package dingtalk
+package common
 
 import (
 	"crypto/hmac"
@@ -8,8 +8,6 @@ import (
 	"fmt"
 	"net/http"
 	"time"
-
-	"github.com/oldwang12/utils/easyhttp"
 )
 
 type DingTalk struct {
@@ -84,7 +82,7 @@ func (d *DingTalk) SendMarkDown(title, text string) error {
 }
 
 func (d *DingTalk) Request(url, method string, requestBody []byte, headers map[string]string) error {
-	b, err := easyhttp.Request(url, http.MethodPost, requestBody, headers)
+	b, err := HttpRequest(url, http.MethodPost, requestBody, headers)
 	if err != nil {
 		return err
 	}

@@ -1,4 +1,4 @@
-package easyhttp
+package common
 
 import (
 	"bytes"
@@ -10,7 +10,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-func Request(url, method string, requestBody []byte, headers map[string]string) ([]byte, error) {
+func HttpRequest(url, method string, requestBody []byte, headers map[string]string) ([]byte, error) {
 	request, err := http.NewRequest(method, url, bytes.NewBuffer(requestBody))
 	if err != nil {
 		return nil, err
@@ -46,7 +46,7 @@ func ExtractURL(text string) (string, error) {
 }
 
 // 获取重定向地址
-func GetRedirectURL(url string) (string, error) {
+func HttpGetRedirectURL(url string) (string, error) {
 	// 发送HTTP GET请求
 	resp, err := http.Get(url)
 	if err != nil {
@@ -63,7 +63,7 @@ func GetRedirectURL(url string) (string, error) {
 }
 
 // 获取url返回的html内容
-func GetUrlHTMLContent(url string) (string, error) {
+func HttpGetUrlHTMLContent(url string) (string, error) {
 	response, err := http.Get(url)
 	if err != nil {
 		return "", err
