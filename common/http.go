@@ -90,3 +90,13 @@ func ExtractHTML(htmlContent, htmlSelect string) (string, error) {
 	jsonString := strings.TrimSpace(matches[1])
 	return jsonString, nil
 }
+
+func GetM3U8Key(s string) (string, error) {
+	parts := strings.Split(s, ",")
+	for _, part := range parts {
+		if strings.HasPrefix(part, "URI=\"") {
+			return part[5 : len(part)-1], nil
+		}
+	}
+	return "", fmt.Errorf("提取m3u8 key失败")
+}
