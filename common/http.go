@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"regexp"
+	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -75,4 +76,17 @@ func HttpGetUrlHTMLContent(url string) (string, error) {
 		return "", err
 	}
 	return document.Html()
+}
+
+func ExtractHTML(htmlContent, htmlSelect string) (string, error) {
+	// 使用正则表达式提取 ytInitialPlayerResponse 的值
+	re := regexp.MustCompile(htmlSelect)
+	matches := re.FindStringSubmatch(htmlContent)
+	if len(matches) < 2 {
+		return "", fmt.Errorf("html 正则匹配失败，请联系管理员: %v", len(matches))
+	}
+
+	// 清理并返回 JSON 字符串
+	jsonString := strings.TrimSpace(matches[1])
+	return jsonString, nil
 }
