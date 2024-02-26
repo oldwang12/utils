@@ -5,6 +5,7 @@ go 1.21
 require (
 	github.com/PuerkitoBio/goquery v1.8.1
 	k8s.io/klog/v2 v2.120.1
+	mvdan.cc/xurls/v2 v2.5.0
 )
 
 require (
