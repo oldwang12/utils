@@ -62,3 +62,10 @@ func WatchFileNewLine(filename string, ch chan string) error {
 		time.Sleep(time.Second)
 	}
 }
+
+func CreateFile(filePath string, content string) error {
+	if _, err := os.Create(filePath); err != nil {
+		return err
+	}
+	return os.WriteFile(filePath, []byte(content), 0644)
+}

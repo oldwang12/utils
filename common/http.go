@@ -5,10 +5,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 	"regexp"
-	"strings"
-
-	"github.com/PuerkitoBio/goquery"
 )
 
 func HttpRequest(url, method string, requestBody []byte, headers map[string]string) ([]byte, error) {
@@ -63,40 +61,22 @@ func HttpGetRedirectURL(url string) (string, error) {
 	return redirectURL.String(), nil
 }
 
-// 获取url返回的html内容
-func HttpGetUrlHTMLContent(url string) (string, error) {
-	response, err := http.Get(url)
+func DownloadFile(url, filepath string) error {
+	resp, err := http.Get(url)
 	if err != nil {
-		return "", err
+		return fmt.Errorf("error download %s: %v", filepath, err)
 	}
-	defer response.Body.Close()
+	defer resp.Body.Close()
 
-	document, err := goquery.NewDocumentFromReader(response.Body)
+	f, err := os.Create(filepath)
 	if err != nil {
-		return "", err
+		return fmt.Errorf("error create file %s: %v", filepath, err)
 	}
-	return document.Html()
-}
+	defer f.Close()
 
-func ExtractHTML(htmlContent, htmlSelect string) (string, error) {
-	// 使用正则表达式提取 ytInitialPlayerResponse 的值
-	re := regexp.MustCompile(htmlSelect)
-	matches := re.FindStringSubmatch(htmlContent)
-	if len(matches) < 2 {
-		return "", fmt.Errorf("html 正则匹配失败，请联系管理员: %v", len(matches))
+	_, err = io.Copy(f, resp.Body)
+	if err != nil {
+		return fmt.Errorf("error writ to file %s: %v", filepath, err)
 	}
-
-	// 清理并返回 JSON 字符串
-	jsonString := strings.TrimSpace(matches[1])
-	return jsonString, nil
-}
-
-func GetM3U8Key(s string) (string, error) {
-	parts := strings.Split(s, ",")
-	for _, part := range parts {
-		if strings.HasPrefix(part, "URI=\"") {
-			return part[5 : len(part)-1], nil
-		}
-	}
-	return "", fmt.Errorf("提取m3u8 key失败")
+	return nil
 }
