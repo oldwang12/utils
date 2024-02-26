@@ -55,3 +55,20 @@ func GetM3U8Key(s string) (string, error) {
 	}
 	return "", fmt.Errorf("提取m3u8 key失败")
 }
+
+func GetHtmlTitle(html string) (string, error) {
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(html))
+	return doc.Find("title").Text(), err
+}
+
+// 获取html中script的变量
+
+// 这是一个正则表达式，用来匹配包含"key = xx;"的字符串。
+func GetHtmlScriptVar(html, key string) (string, error) {
+	return ExtractHTML(html, fmt.Sprintf(`%v\s*=\s*(.*?);`, key))
+}
+
+// 这是一个正则表达式，用来匹配包含"key = {};"的字符串。
+func GetHtmlScriptJsonVar(html, key string) (string, error) {
+	return ExtractHTML(html, fmt.Sprintf(`%v\s*=\s*({.*?});`, key))
+}
