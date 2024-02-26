@@ -37,3 +37,8 @@ func GetLastIndexValue(s, sep string) string {
 	strs := strings.Split(s, sep)
 	return strs[len(strs)-1]
 }
+
+func GetBeforeLastIndexValue(s, sep string) string {
+	lastIndexValue := GetLastIndexValue(s, sep)
+	return strings.TrimRight(s, lastIndexValue)
+}
