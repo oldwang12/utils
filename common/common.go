@@ -29,6 +29,6 @@ func GetTimeHourMinuteSecoud(t int) string {
 // 获取一段文本信息中所有的链接
 func GetLinks(text string) []string {
 	// 匹配http和https开头的链接
-	re := regexp.MustCompile(`(https?://\S+)`)
+	re := regexp.MustCompile(`(https?://\S+)"`)
 	return re.FindAllString(text, -1)
 }
