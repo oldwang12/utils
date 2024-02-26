@@ -9,6 +9,16 @@ import (
 	"regexp"
 )
 
+func GetDefaultHeaders() map[string]string {
+	headers := make(map[string]string)
+	headers["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "*/*"
+	headers["Connection"] = "keep-alive"
+	headers["Accept-Language"] = "zh-CN,zh;q=0.9"
+	return headers
+}
+
 func HttpRequest(url, method string, requestBody []byte, headers map[string]string) ([]byte, error) {
 	request, err := http.NewRequest(method, url, bytes.NewBuffer(requestBody))
 	if err != nil {
