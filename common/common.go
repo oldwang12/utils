@@ -3,6 +3,7 @@ package common
 import (
 	"crypto/md5"
 	"fmt"
+	"strings"
 
 	"mvdan.cc/xurls/v2"
 )
@@ -30,4 +31,9 @@ func GetTimeHourMinuteSecoud(t int) string {
 // 获取一段文本信息中所有的链接
 func GetLinks(text string) []string {
 	return xurls.Strict().FindAllString(text, -1)
+}
+
+func GetLastIndexValue(s, sep string) string {
+	strs := strings.Split(s, sep)
+	return strs[len(strs)-1]
 }
