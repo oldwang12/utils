@@ -13,3 +13,14 @@ func MD5(s string) string {
 	hashSum := md5Hash.Sum(nil)
 	return fmt.Sprintf("%x", hashSum)
 }
+
+// 传入单位为秒
+func GetTimeHourMinuteSecoud(t int) string {
+	if t < 60 {
+		return fmt.Sprintf("%v秒", t)
+	}
+	if t >= 60 && t < 3600 {
+		return fmt.Sprintf("%v分%v秒", t/60, t%60)
+	}
+	return fmt.Sprintf("%v时%v分%v秒", t/3600, t%3600/60, t%3600%60)
+}
