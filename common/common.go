@@ -3,7 +3,10 @@ package common
 import (
 	"crypto/md5"
 	"fmt"
+	"net/http"
+	"net/url"
 	"strings"
+	"time"
 
 	"mvdan.cc/xurls/v2"
 )
@@ -47,4 +50,26 @@ func GetLastIndexValue(s, sep string) string {
 func GetBeforeLastIndexValue(s, sep string) string {
 	lastIndexValue := GetLastIndexValue(s, sep)
 	return strings.TrimRight(s, lastIndexValue)
+}
+
+var sendGroupMessageTime = make(map[int64]time.Time)
+
+func SendQQMessage(cqUrl, message string, userid, groupid int64) ([]byte, error) {
+	params := url.Values{}
+	if userid != 0 {
+		params.Add("user_id", fmt.Sprintf("%v", userid))
+	} else if groupid != 0 {
+		if !sendGroupMessageTime[groupid].IsZero() {
+			if time.Since(sendGroupMessageTime[groupid]) < 5*time.Minute {
+				return nil, fmt.Errorf("发送频率太快，忽略。")
+			}
+		}
+		sendGroupMessageTime[groupid] = time.Now()
+		params.Add("group_id", fmt.Sprintf("%v", groupid))
+	}
+	params.Set("auto_escape", "false") // 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 reply 字段是字符串时有效
+	params.Add("message", message)
+	return HttpRequest(
+		fmt.Sprintf("%v/send_msg?%v", cqUrl, params.Encode()),
+		http.MethodGet, nil, nil)
 }
