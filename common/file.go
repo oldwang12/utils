@@ -1,6 +1,7 @@
 package common
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"strings"
@@ -63,9 +64,37 @@ func WatchFileNewLine(filename string, ch chan string) error {
 	}
 }
 
+// 创建文件
 func CreateFile(filePath string, content string) error {
 	if _, err := os.Create(filePath); err != nil {
 		return err
 	}
 	return os.WriteFile(filePath, []byte(content), 0644)
+}
+
+// 获取文件大小
+func GetFileSize(filePath string) (int64, error) {
+	fileInfo, err := os.Stat(filePath)
+	if err != nil {
+		return 0, err
+	}
+	size := fileInfo.Size()
+	return size, nil
+}
+
+// 文件大小可视化
+func FileSizeToView(size int64) string {
+	if size < 1024 {
+		return fmt.Sprintf("%dB", size)
+	}
+	if size < (1024 * 1024) {
+		return fmt.Sprintf("%.2fKB", float64(size)/1024)
+	}
+	if size < (1024 * 1024 * 1024) {
+		return fmt.Sprintf("%.2fMB", float64(size)/(1024*1024))
+	}
+	if size < (1024 * 1024 * 1024 * 1024) {
+		return fmt.Sprintf("%.2fGB", float64(size)/(1024*1024*1024))
+	}
+	return fmt.Sprintf("%.2fTB", float64(size)/(1024*1024*1024*1024))
 }

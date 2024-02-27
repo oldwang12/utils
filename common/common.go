@@ -4,11 +4,8 @@ import (
 	"crypto/md5"
 	"fmt"
 	"strings"
-	"time"
 
 	"mvdan.cc/xurls/v2"
-
-	"github.com/avast/retry-go"
 )
 
 func MD5(s string) string {
@@ -50,14 +47,4 @@ func GetLastIndexValue(s, sep string) string {
 func GetBeforeLastIndexValue(s, sep string) string {
 	lastIndexValue := GetLastIndexValue(s, sep)
 	return strings.TrimRight(s, lastIndexValue)
-}
-
-// 多次执行函数
-func RetryFunc(fn func() error, retryAttempts int, waitTime time.Duration) error {
-	return retry.Do(
-		fn,
-		retry.Delay(waitTime),
-		retry.Attempts(uint(retryAttempts)),
-		retry.DelayType(retry.FixedDelay),
-	)
 }
