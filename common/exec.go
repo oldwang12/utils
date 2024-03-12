@@ -31,7 +31,7 @@ func LocalExec(command string, nolog bool) (string, error) {
 	c := exec.Command("/bin/sh", "-c", command)
 	result, err := c.CombinedOutput()
 	if err != nil {
-		return "", fmt.Errorf(Red("[本地执行]: "+command), ", err: ", c.Stderr)
+		return "", fmt.Errorf("%v, err: %v", Red("[本地执行]: "+command), c.Stderr)
 	}
 	klog.Info(Green("[本地执行]: " + command))
 
