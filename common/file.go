@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -97,4 +99,19 @@ func FileSizeToView(size int64) string {
 		return fmt.Sprintf("%.2fGB", float64(size)/(1024*1024*1024))
 	}
 	return fmt.Sprintf("%.2fTB", float64(size)/(1024*1024*1024*1024))
+}
+
+// 获取某个目录下所有文件,不包含目录
+func GetAllFiles(dirPath string) ([]string, error) {
+	var files []string
+	err := filepath.Walk(dirPath, func(filepath string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !info.IsDir() {
+			files = append(files, path.Base(filepath))
+		}
+		return nil
+	})
+	return files, err
 }
