@@ -27,7 +27,7 @@ func Yellow(s string) string {
 	return fmt.Sprintf("\x1b[%dm%s\x1b[0m", color_yellow, s)
 }
 
-func LocalExec(command string, nolog bool) (string, error) {
+func LocalExec(command string) (string, error) {
 	c := exec.Command("/bin/sh", "-c", command)
 	result, err := c.CombinedOutput()
 	if err != nil {
@@ -35,8 +35,18 @@ func LocalExec(command string, nolog bool) (string, error) {
 	}
 	klog.Info(Green("[本地执行]: " + command))
 
-	if string(result) != "" && !nolog {
+	if string(result) != "" {
 		klog.Info(Yellow(string(result)))
 	}
+	return string(result), nil
+}
+
+func LocalExecNoLog(command string) (string, error) {
+	c := exec.Command("/bin/sh", "-c", command)
+	result, err := c.CombinedOutput()
+	if err != nil {
+		return "", fmt.Errorf("%v, err: %v", Red("[本地执行]: "+command), c.Stderr)
+	}
+	klog.Info(Green("[本地执行]: " + command))
 	return string(result), nil
 }
