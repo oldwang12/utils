@@ -115,3 +115,17 @@ func GetAllFiles(dirPath string) ([]string, error) {
 	})
 	return files, err
 }
+
+func GetAllFilePaths(dirPath string) ([]string, error) {
+	var filepaths []string
+	err := filepath.Walk(dirPath, func(filepath string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !info.IsDir() {
+			filepaths = append(filepaths, filepath)
+		}
+		return nil
+	})
+	return filepaths, err
+}
