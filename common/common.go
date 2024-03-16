@@ -73,3 +73,17 @@ func SendQQMessage(cqUrl, message string, userid, groupid int64) ([]byte, error)
 		fmt.Sprintf("%v/send_msg?%v", cqUrl, params.Encode()),
 		http.MethodGet, nil, nil)
 }
+
+func Md5(input string) string {
+	// 创建一个 md5 hash 对象
+	hash := md5.New()
+
+	// 将字符串转换为字节切片，并写入 hash 对象
+	hash.Write([]byte(input))
+
+	// 获取 hash 值的摘要（字节切片）
+	hashSum := hash.Sum(nil)
+
+	// 将摘要转换为十六进制字符串
+	return fmt.Sprintf("%x", hashSum)
+}
