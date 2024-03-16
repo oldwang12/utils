@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"regexp"
+	"time"
 )
 
 func GetDefaultHeaders() map[string]string {
@@ -71,12 +72,20 @@ func HttpGetRedirectURL(url string) (string, error) {
 	return redirectURL.String(), nil
 }
 
-func DownloadFile(url, filepath string) error {
-	resp, err := http.Get(url)
+func DownloadFile(url, filepath string, timeout time.Duration) error {
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return fmt.Errorf("error download %s: %v", filepath, err)
 	}
-	defer resp.Body.Close()
+	defer req.Body.Close()
+
+	client := &http.Client{
+		Timeout: timeout,
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
 
 	f, err := os.Create(filepath)
 	if err != nil {
