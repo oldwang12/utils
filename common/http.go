@@ -77,7 +77,6 @@ func DownloadFile(url, filepath string, timeout time.Duration) error {
 	if err != nil {
 		return fmt.Errorf("error download %s: %v", filepath, err)
 	}
-	defer req.Body.Close()
 
 	client := &http.Client{
 		Timeout: timeout,
