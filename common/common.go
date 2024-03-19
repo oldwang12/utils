@@ -87,3 +87,13 @@ func Md5(input string) string {
 	// 将摘要转换为十六进制字符串
 	return fmt.Sprintf("%x", hashSum)
 }
+
+// 标准文件名格式
+func StandardDownloadFileName(s string) string {
+	s = strings.ReplaceAll(s, " ", "-")
+	s = strings.ReplaceAll(s, "(", "-")
+	s = strings.ReplaceAll(s, ")", "")
+	s = strings.TrimPrefix(s, "-")
+	s = strings.TrimSuffix(s, "-")
+	return s
+}
