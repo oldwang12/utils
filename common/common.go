@@ -93,7 +93,18 @@ func StandardDownloadFileName(s string) string {
 	s = strings.ReplaceAll(s, " ", "-")
 	s = strings.ReplaceAll(s, "(", "-")
 	s = strings.ReplaceAll(s, ")", "")
-	s = strings.TrimPrefix(s, "-")
-	s = strings.TrimSuffix(s, "-")
+
+	for {
+		s = strings.TrimPrefix(s, "-")
+		if s == strings.TrimPrefix(s, "-") {
+			break
+		}
+	}
+	for {
+		s = strings.TrimSuffix(s, "-")
+		if s == strings.TrimSuffix(s, "-") {
+			break
+		}
+	}
 	return s
 }
