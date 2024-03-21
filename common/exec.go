@@ -27,6 +27,15 @@ func Yellow(s string) string {
 	return fmt.Sprintf("\x1b[%dm%s\x1b[0m", color_yellow, s)
 }
 
+func Blue(s string) string {
+	return fmt.Sprintf("\x1b[%dm%s\x1b[0m", color_blue, s)
+}
+
+// 洋红
+func Magenta(s string) string {
+	return fmt.Sprintf("\x1b[%dm%s\x1b[0m", color_magenta, s)
+}
+
 func LocalExec(command string) (string, error) {
 	c := exec.Command("/bin/sh", "-c", command)
 	result, err := c.CombinedOutput()
