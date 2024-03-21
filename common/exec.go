@@ -56,6 +56,5 @@ func LocalExecNoLog(command string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("%v, err: %v", Red("[本地执行]: "+command), c.Stderr)
 	}
-	klog.Info(Green("[本地执行]: " + command))
 	return string(result), nil
 }
