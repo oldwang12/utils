@@ -13,7 +13,7 @@ const (
 	color_yellow  //	黄
 	color_blue    // 	蓝
 	color_magenta //	洋红
-	clour_blue2   // 	浅蓝
+	color_blue2   // 	浅蓝
 )
 
 func Red(s string) string {
@@ -30,6 +30,10 @@ func Yellow(s string) string {
 
 func Blue(s string) string {
 	return fmt.Sprintf("\x1b[%dm%s\x1b[0m", color_blue, s)
+}
+
+func Blue2(s string) string {
+	return fmt.Sprintf("\x1b[%dm%s\x1b[0m", color_blue2, s)
 }
 
 // 洋红
