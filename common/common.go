@@ -69,9 +69,7 @@ func SendQQMessage(cqUrl, message string, userid, groupid int64) ([]byte, error)
 	}
 	params.Set("auto_escape", "false") // 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 reply 字段是字符串时有效
 	params.Add("message", message)
-	return HttpRequest(
-		fmt.Sprintf("%v/send_msg?%v", cqUrl, params.Encode()),
-		http.MethodGet, nil, nil)
+	return HttpRequest(fmt.Sprintf("%v/send_msg?%v", cqUrl, params.Encode()), http.MethodGet, nil, nil, nil)
 }
 
 func Md5(input string) string {

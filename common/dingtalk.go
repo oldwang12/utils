@@ -82,7 +82,7 @@ func (d *DingTalk) SendMarkDown(title, text string) error {
 }
 
 func (d *DingTalk) Request(url, method string, requestBody []byte, headers map[string]string) error {
-	b, err := HttpRequest(url, http.MethodPost, requestBody, headers)
+	b, err := HttpRequest(url, http.MethodPost, requestBody, headers, nil)
 	if err != nil {
 		return err
 	}
