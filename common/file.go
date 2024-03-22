@@ -90,13 +90,13 @@ func FileSizeToView(size int64) string {
 		return fmt.Sprintf("%dB", size)
 	}
 	if size < (1024 * 1024) {
-		return fmt.Sprintf("%.2fKB", float64(size)/1024)
+		return fmt.Sprintf("%.1fKB", float64(size)/1024)
 	}
 	if size < (1024 * 1024 * 1024) {
-		return fmt.Sprintf("%.2fMB", float64(size)/(1024*1024))
+		return fmt.Sprintf("%.1fMB", float64(size)/(1024*1024))
 	}
 	if size < (1024 * 1024 * 1024 * 1024) {
-		return fmt.Sprintf("%.2fGB", float64(size)/(1024*1024*1024))
+		return fmt.Sprintf("%.1fGB", float64(size)/(1024*1024*1024))
 	}
 	return fmt.Sprintf("%.2fTB", float64(size)/(1024*1024*1024*1024))
 }

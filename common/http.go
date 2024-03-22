@@ -20,7 +20,7 @@ func GetDefaultHeaders() map[string]string {
 	return headers
 }
 
-func HttpRequest(url, method string, requestBody []byte, headers map[string]string) ([]byte, error) {
+func HttpRequest(url, method string, requestBody []byte, headers map[string]string, client *http.Client) ([]byte, error) {
 	request, err := http.NewRequest(method, url, bytes.NewBuffer(requestBody))
 	if err != nil {
 		return nil, err
@@ -29,7 +29,9 @@ func HttpRequest(url, method string, requestBody []byte, headers map[string]stri
 	for key, value := range headers {
 		request.Header.Set(key, value)
 	}
-	client := &http.Client{}
+	if client == nil {
+		client = &http.Client{}
+	}
 
 	resp, err := client.Do(request)
 	if err != nil {
