@@ -13,6 +13,7 @@ const (
 	color_yellow  //	黄
 	color_blue    // 	蓝
 	color_magenta //	洋红
+	clour_blue2   // 	浅蓝
 )
 
 func Red(s string) string {
