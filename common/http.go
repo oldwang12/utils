@@ -37,6 +37,8 @@ func HttpRequest(url, method string, requestBody []byte, headers map[string]stri
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
+
 	return io.ReadAll(resp.Body)
 }
 
@@ -87,6 +89,7 @@ func DownloadFile(url, filepath string, timeout time.Duration) error {
 	if err != nil {
 		return err
 	}
+	defer resp.Body.Close()
 
 	f, err := os.Create(filepath)
 	if err != nil {
