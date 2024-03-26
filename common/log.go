@@ -53,6 +53,10 @@ func KLogWarningf(format string, args ...interface{}) {
 	klog.Warningf(Yellow(fmt.Sprintf(format, args...)))
 }
 
+func KLogFatalf(format string, args ...interface{}) {
+	klog.Fatalf(Yellow(fmt.Sprintf(format, args...)))
+}
+
 func KLogError(args ...interface{}) {
 	klog.Error(Red(fmt.Sprint(args...)))
 }
@@ -63,4 +67,8 @@ func KLogInfo(format string, args ...interface{}) {
 
 func KLogWarning(format string, args ...interface{}) {
 	klog.Warning(Yellow(fmt.Sprint(args...)))
+}
+
+func KLogFatal(args ...interface{}) {
+	klog.Fatal(Red(fmt.Sprint(args...)))
 }
