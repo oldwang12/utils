@@ -8,7 +8,7 @@ import (
 )
 
 // 记得 defer client.Close()
-func ClientSSH(command, serverAddr, sshPort, sshUser, privateKeyPath string) (*ssh.Client, error) {
+func ClientSSH(serverAddr, sshPort, sshUser, privateKeyPath string) (*ssh.Client, error) {
 	// 读取私钥文件
 	key, err := os.ReadFile(privateKeyPath)
 	if err != nil {
