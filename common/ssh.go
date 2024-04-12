@@ -34,7 +34,7 @@ func ClientSSH(serverAddr, sshPort, sshUser, privateKeyPath string) (*ssh.Client
 	return ssh.Dial("tcp", serverAddr+":"+sshPort, config)
 }
 
-func ExecSSHCommand(client *ssh.Client, command string) (string, error) {
+func SSHCombinedOutput(client *ssh.Client, command string) (string, error) {
 	// 执行远程命令
 	session, err := client.NewSession()
 	if err != nil {
